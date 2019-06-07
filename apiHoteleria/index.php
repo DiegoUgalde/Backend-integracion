@@ -180,5 +180,255 @@ $app->get('/delete-reserva/:id' , function($id) use ($db, $app){
 
     echo json_encode($result);
 });
+//PAGO
+//insert pago
+$app->post('/pago' , function() use($app, $db){
+
+    $fecha = $app->request->post('fecha');
+    $costo = $app->request->post('costo');
+    $id_reserva = $app->request->post('id_reserva');
+
+    $query = "INSERT INTO pago VALUES(NULL,".
+    "'{$fecha}',".
+    "'{$costo}',".
+    "'{$id_reserva}'".
+    ");";
+
+
+    $insert = $db->query($query);
+
+    $result =  array(
+        'status' => 'error',
+        'code' => 404,
+        'message' => 'Fallo'
+    );
+    
+    if($insert){
+        $result =  array(
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Creado'
+        );
+    }
+    echo json_encode($result);
+});
+
+//Metodo GET pago
+
+$app->get('/pago' , function() use ($db,$app){
+    $sql = 'SELECT * FROM pago ORDER BY id DESC;';
+    $query = $db -> query($sql);
+
+    $productos = array();
+    while($producto = $query->fetch_assoc()){
+        $productos[] = $producto;
+    }
+    $result =  array(
+        'status' => 'success',
+        'code' => 200,
+        'data' => $productos
+    );
+
+    echo json_encode($result);
+
+});
+
+
+//actualizar PUT pago
+
+$app->post('/update-pago/:id' , function($id) use($app, $db){
+
+    $fecha = $app->request->post('fecha');
+    $costo = $app->request->post('costo');
+    $id_reserva = $app->request->post('id_reserva');
+    
+    // $json = $app->request->post('json');
+    // $data = json_decode($json,true);
+    $pagoOrigin = $db->query("SELECT * FROM pago WHERE id = $id")->fetch_array();
+
+    $fecha = $fecha ?:  $pagoOrigin['fecha'];
+    $costo = $costo ?:  $pagoOrigin['costo'];
+    $id_reserva = $id_reserva ?:  $pagoOrigin['id_reserva'];
+
+    $sql = "UPDATE pago SET fecha = '$fecha',  costo = '$costo', id_reserva = '$id_reserva' WHERE id = $id";
+
+    
+    // var_dump($sql);
+    $query = mysqli_query($db, $sql);
+
+    // $query = $db->query($sql);
+
+    //  print_r($query);
+    //  die();
+    
+    if($query){
+        $result =  array(
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'actualizado'
+        );
+    }else{
+        $result =  array(
+            'status' => 'failed',
+            'code' => 404,
+            'message' => 'no actualizado'
+        );
+    }
+
+    echo json_encode($result);
+});
+
+//Eliminar DELETE pago
+
+$app->get('/delete-pago/:id' , function($id) use ($db, $app){
+    $sql = 'DELETE FROM pago WHERE id = '.$id;
+    $query = $db->query($sql);
+
+    if($query){
+        $result =  array(
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Borrado'
+        );
+    }else{
+        $result =  array(
+            'status' => 'failed',
+            'code' => 404,
+            'message' => 'no se a borrado'
+        );
+    }
+
+    echo json_encode($result);
+});
+
+
+
+//HABITACION
+//insert habitacion
+$app->post('/habitacion' , function() use($app, $db){
+
+    $tipo = $app->request->post('tipo');
+    $cantCamas = $app->request->post('cantCamas');
+    $disponible = $app->request->post('disponible');
+    $hotel_id = $app->request->post('hotel_id');
+    
+
+    $query = "INSERT INTO habitacion VALUES(NULL,".
+    "'{$tipo}',".
+    "'{$cantCamas}',".
+    "'{$disponible}',".
+    "'{$hotel_id}'".    
+    ");";
+
+
+    $insert = $db->query($query);
+
+    $result =  array(
+        'status' => 'error',
+        'code' => 404,
+        'message' => 'Fallo'
+    );
+    
+    if($insert){
+        $result =  array(
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Creado'
+        );
+    }
+    echo json_encode($result);
+});
+
+
+//Metodo GET habitacion
+
+$app->get('/habitacion' , function() use ($db,$app){
+    $sql = 'SELECT * FROM habitacion ORDER BY id DESC;';
+    $query = $db -> query($sql);
+
+    $productos = array();
+    while($producto = $query->fetch_assoc()){
+        $productos[] = $producto;
+    }
+    $result =  array(
+        'status' => 'success',
+        'code' => 200,
+        'data' => $productos
+    );
+
+    echo json_encode($result);
+
+});
+
+//actualizar PUT habitacion
+
+$app->post('/update-habitacion/:id' , function($id) use($app, $db){
+
+    $tipo = $app->request->post('tipo');
+    $cantCamas = $app->request->post('cantCamas');
+    $disponible = $app->request->post('disponible');
+    $hotel_id = $app->request->post('hotel_id');
+    
+    
+    // $json = $app->request->post('json');
+    // $data = json_decode($json,true);
+    $habitacionOrigin = $db->query("SELECT * FROM habitacion WHERE id = $id")->fetch_array();
+
+    $tipo = $tipo ?:  $habitacionOrigin['tipo'];
+    $cantCamas = $cantCamas ?:  $habitacionOrigin['cantCamas'];
+    $disponible = $disponible ?:  $habitacionOrigin['disponible'];
+    $hotel_id = $hotel_id ?:  $habitacionOrigin['hotel_id'];
+    
+
+    $sql = "UPDATE habitacion SET tipo = '$tipo', cantCamas = '$cantCamas', disponible = '$disponible', hotel_id = '$hotel_id' WHERE id = $id";
+
+    
+    // var_dump($sql);
+    $query = mysqli_query($db, $sql);
+
+    // $query = $db->query($sql);
+
+    //  print_r($query);
+    //  die();
+    
+    if($query){
+        $result =  array(
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'actualizado'
+        );
+    }else{
+        $result =  array(
+            'status' => 'failed',
+            'code' => 404,
+            'message' => 'no actualizado'
+        );
+    }
+
+    echo json_encode($result);
+});
+
+//Eliminar DELETE pago
+
+$app->get('/delete-habitacion/:id' , function($id) use ($db, $app){
+    $sql = 'DELETE FROM habitacion WHERE id = '.$id;
+    $query = $db->query($sql);
+
+    if($query){
+        $result =  array(
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Borrado'
+        );
+    }else{
+        $result =  array(
+            'status' => 'failed',
+            'code' => 404,
+            'message' => 'no se a borrado'
+        );
+    }
+
+    echo json_encode($result);
+});
 
 $app->run();
