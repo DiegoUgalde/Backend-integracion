@@ -1,0 +1,10 @@
+{
+    "require": {
+        "slim/slim": "2.*",
+        "illuminate/database": "*",
+        "freshwork/transbank": "^1.1"
+    },
+    "autoload": {
+        "classmap": ["piramide-uploader"]
+    }
+}
